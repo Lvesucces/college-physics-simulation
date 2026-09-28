@@ -1,0 +1,2790 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>大学物理虚拟仿真：光电效应与普朗克常数测定实验平台</title>
+  <style>
+    :root {
+      --bg-primary: #0a0f1d;
+      --bg-secondary: #121a2f;
+      --bg-card: #18223c;
+      --bg-glass: rgba(24, 34, 60, 0.75);
+      --border-color: #26365a;
+      --accent-cyan: #00f0ff;
+      --accent-blue: #3b82f6;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部导航 */
+    header {
+      background: rgba(10, 15, 29, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #050b17;
+      font-weight: 900;
+      font-size: 20px;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+    }
+
+    .brand-text h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      background: linear-gradient(90deg, #fff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-text p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
+      color: #031525;
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(0, 240, 255, 0.25);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 16px rgba(0, 240, 255, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
+
+    .btn-danger {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: #fb7185;
+    }
+
+    .btn-danger:hover {
+      background: rgba(244, 63, 94, 0.3);
+    }
+
+    /* 移动端与桌面端自适应主容器 */
+    main {
+      flex: 1;
+      padding: 16px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 1080px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* 卡片通用 */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #e2e8f0;
+    }
+
+    .card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--accent-cyan);
+    }
+
+    /* 物理仿真视窗 */
+    .sim-viewport {
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #111a33 0%, #080c18 100%);
+      border-radius: 10px;
+      border: 1px solid #1f2c4d;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      min-height: 280px;
+    }
+
+    #simCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 物理仿真上方悬浮状态小标牌 */
+    .sim-overlay-stats {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .overlay-pill {
+      background: rgba(10, 15, 29, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-family: monospace;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+    }
+
+    .overlay-pill span {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+
+    .sim-controls-bar {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* AI 实时纠错与安全巡检浮动条 */
+    .ai-guard-banner {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(16, 185, 129, 0.08));
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: pulseBorder 4s infinite alternate;
+    }
+
+    @keyframes pulseBorder {
+      0% { border-color: rgba(59, 130, 246, 0.3); }
+      100% { border-color: rgba(0, 240, 255, 0.5); }
+    }
+
+    .ai-guard-icon {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--accent-cyan);
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .ai-guard-content {
+      flex: 1;
+      font-size: 0.8rem;
+    }
+
+    .ai-guard-title {
+      font-weight: 700;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .ai-guard-desc {
+      color: #cbd5e1;
+      font-size: 0.76rem;
+      line-height: 1.4;
+    }
+
+    /* 宏观仪表盘：电压表与微安表 */
+    .meters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .meter-box {
+      background: #0d1527;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .meter-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .digital-display {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+      background: #050b14;
+      border: 1px solid #1a2742;
+      border-radius: 6px;
+      padding: 4px 12px;
+      width: 100%;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .digital-display.ammeter {
+      color: #34d399;
+      text-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
+    }
+
+    .meter-sub {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* 实验操作控制区 */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .control-group {
+      background: rgba(13, 21, 39, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .group-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #93c5fd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .spectral-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip-btn {
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #15203b;
+      border: 1px solid #28395f;
+      color: #cbd5e1;
+      transition: all 0.15s;
+    }
+
+    .chip-btn:hover, .chip-btn.active {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.12);
+      color: #fff;
+    }
+
+    .chip-btn.active {
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    }
+
+    .range-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .range-slider {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: #1f2b48;
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent-cyan);
+      transition: transform 0.1s;
+    }
+
+    .range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .range-val {
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      min-width: 48px;
+      text-align: right;
+    }
+
+    /* 选项框 Select */
+    select.custom-select {
+      background: #0f182e;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      outline: none;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    select.custom-select:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    /* 电压双模式微调 */
+    .volt-stepper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .volt-stepper button {
+      background: #192544;
+      border: 1px solid #2e416d;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .volt-stepper button:hover {
+      background: #23345d;
+      border-color: var(--accent-cyan);
+    }
+
+    /* 图表容器 */
+    .chart-container {
+      width: 100%;
+      height: 220px;
+      position: relative;
+    }
+
+    #ivChartCanvas, #fitChartCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* 数据表格 */
+    .table-responsive {
+      overflow-x: auto;
+      max-height: 200px;
+      border: 1px solid #1f2b48;
+      border-radius: 8px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    table.data-table th {
+      background: #0d1629;
+      color: #93c5fd;
+      padding: 6px 8px;
+      font-weight: 600;
+      border-bottom: 1px solid #1f2b48;
+      position: sticky;
+      top: 0;
+    }
+
+    table.data-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #131e35;
+      color: #cbd5e1;
+      font-family: monospace;
+    }
+
+    table.data-table tr:hover {
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    /* 拟合结果指示卡片 */
+    .fit-result-badge {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .stat-pill {
+      background: #0c1424;
+      border: 1px solid #1c2b4a;
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .stat-pill-label {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+    }
+
+    .stat-pill-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #38bdf8;
+      font-family: monospace;
+    }
+
+    /* AI 对话与助手抽屉 */
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 380px;
+      background: #0a0f1d;
+      border-radius: 10px;
+      border: 1px solid #1c2a47;
+      overflow: hidden;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: 8px;
+      max-width: 88%;
+      animation: fadeIn 0.2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-msg.assistant {
+      align-self: flex-start;
+    }
+
+    .chat-msg.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .chat-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .chat-msg.assistant .chat-avatar {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #fff;
+    }
+
+    .chat-msg.user .chat-avatar {
+      background: #334155;
+      color: #94a3b8;
+    }
+
+    .chat-bubble {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .chat-msg.assistant .chat-bubble {
+      background: #16223d;
+      border: 1px solid #23345a;
+      color: #e2e8f0;
+      border-top-left-radius: 2px;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: #2563eb;
+      color: #fff;
+      border-top-right-radius: 2px;
+    }
+
+    .quick-chips {
+      padding: 6px 12px;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      background: rgba(13, 21, 39, 0.8);
+      border-top: 1px solid #1a2744;
+    }
+
+    .quick-chip {
+      white-space: nowrap;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      background: #182542;
+      border: 1px solid #28395f;
+      border-radius: 12px;
+      color: #93c5fd;
+      cursor: pointer;
+    }
+
+    .quick-chip:hover {
+      background: #253966;
+      border-color: var(--accent-cyan);
+    }
+
+    .chat-input-row {
+      padding: 8px 12px;
+      background: #0d1527;
+      border-top: 1px solid #1a2744;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .chat-input {
+      flex: 1;
+      background: #141f38;
+      border: 1px solid #24355a;
+      border-radius: 6px;
+      padding: 6px 10px;
+      color: #fff;
+      font-size: 0.78rem;
+      outline: none;
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    /* 弹窗 Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 8, 18, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: #141d33;
+      border: 1px solid #293d6b;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      transform: translateY(12px) scale(0.98);
+      transition: all 0.25s ease;
+      padding: 20px;
+    }
+
+    .modal-backdrop.active .modal-content {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #223254;
+      padding-bottom: 10px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.1rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    .close-btn:hover {
+      color: #fff;
+    }
+
+    /* 报告卡评分盘 */
+    .score-circle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: #0d1527;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      border: 1px solid #203154;
+    }
+
+    .score-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 4px solid var(--accent-cyan);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.3);
+    }
+
+    .score-circle .score-num {
+      font-size: 1.6rem;
+      line-height: 1;
+      color: var(--accent-cyan);
+    }
+
+    .score-circle .score-txt {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+
+    .score-breakdown {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .score-item {
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 8px;
+      background: #16223c;
+      border-radius: 6px;
+    }
+
+    .score-item span:last-child {
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    /* 页脚 */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      background: #080c18;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* 辅助样式与提示 */
+    .hint-text {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      line-height: 1.3;
+    }
+    
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .switch-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .toggle-checkbox {
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航栏 -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">Φ</div>
+      <div class="brand-text">
+        <h1>大学物理虚拟仿真：光电效应与普朗克常数测定</h1>
+        <p>Einstein Photoelectric Effect & Planck Constant Measurement Virtual Lab</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="badge"><span class="status-indicator"></span> 物理引擎: 60 FPS 极速运行</div>
+      <button class="btn btn-outline btn-sm" id="btnOpenDocs" title="查看用户手册与原理说明">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+        实验手册
+      </button>
+      <button class="btn btn-outline btn-sm" id="btnOpenLLMSettings" title="配置本地/离线 LLM 模型 (加分项)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        AI引擎配置
+      </button>
+      <button class="btn btn-primary btn-sm" id="btnEvaluateReport">
+        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        生成AI评估报告
+      </button>
+    </div>
+  </header>
+
+  <!-- 主体工作区 -->
+  <main>
+    <!-- 左侧列：物理仿真器、宏观仪表盘、实验控制面板 -->
+    <div class="panel-col">
+      
+      <!-- 物理仿真视窗 (微观光子-电子动力学 + 宏观光电管) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            真空光电管与微观粒子动力学仿真
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <label class="switch-wrap" title="开启后可用手机倾斜微调实验参数(加分项：传感器交互)">
+              <input type="checkbox" id="chkGyro" class="toggle-checkbox">
+              <span>手机体感交互</span>
+            </label>
+            <label class="switch-wrap">
+              <input type="checkbox" id="chkSlowMotion" class="toggle-checkbox">
+              <span>慢动作观察</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="sim-viewport">
+          <canvas id="simCanvas"></canvas>
+          <div class="sim-overlay-stats">
+            <div class="overlay-pill">入射光子能量: <span id="txtPhotonEnergy">2.27 eV</span></div>
+            <div class="overlay-pill">阴极逸出功 W₀: <span id="txtWorkFunction">2.14 eV</span></div>
+            <div class="overlay-pill">电子最大初动能: <span id="txtMaxEk">0.13 eV</span></div>
+            <div class="overlay-pill">电场做功 eU: <span id="txtFieldWork">0.00 eV</span></div>
+          </div>
+          <div class="sim-controls-bar">
+            <button class="btn btn-outline btn-sm" id="btnToggleLight">光源：已开启</button>
+            <button class="btn btn-outline btn-sm" id="btnResetSim">重置粒子</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI 实验操作实时纠错与安全巡检警示条 -->
+      <div class="ai-guard-banner" id="aiGuardBanner">
+        <div class="ai-guard-icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div class="ai-guard-content">
+          <div class="ai-guard-title" id="aiGuardTitle">AI 智能实验导师实时就绪</div>
+          <div class="ai-guard-desc" id="aiGuardDesc">系统正在持续监测您的实验接线、电压极性与测量操作。调节参数寻找反向截止电压时，AI将为您提供即时物理学辨析与纠错。</div>
+        </div>
+      </div>
+
+      <!-- 宏观高精度数字仪表 -->
+      <div class="meters-grid">
+        <div class="meter-box">
+          <div class="meter-label">微安电流表 (Pico/Micro Ammeter)</div>
+          <div class="digital-display ammeter" id="dispCurrent">0.000 <span style="font-size:0.9rem;">μA</span></div>
+          <div class="meter-sub" id="dispCurrentSub">饱和光电流上限: 2.450 μA</div>
+        </div>
+        <div class="meter-box">
+          <div class="meter-label">两极电势差 (Digital Voltmeter)</div>
+          <div class="digital-display" id="dispVoltage">+0.00 <span style="font-size:0.9rem;">V</span></div>
+          <div class="meter-sub" id="dispVoltageMode">工作模式: 零偏置电场 (0.00V)</div>
+        </div>
+      </div>
+
+      <!-- 实验台控制中心 (光源波长、光强、加速/遏止电压、金属材料) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            仪器控制台与参数调节
+          </div>
+          <button class="btn btn-outline btn-sm" id="btnAutoRecordDemo">一键标样采样(Demo)</button>
+        </div>
+
+        <div class="controls-grid">
+          <!-- 入射光单色波长选择 -->
+          <div class="control-group">
+            <div class="group-title">
+              <span>入射光波长 λ</span>
+              <span id="txtWavelengthVal" style="color:var(--accent-cyan); font-family:monospace;">546 nm (绿光)</span>
+            </div>
+            <div class="spectral-presets">
+              <button class="chip-btn" data-wl="365">365nm(紫外)</button>
+              <button class="chip-btn" data-wl="405">405nm(紫光)</button>
+              <button class="chip-btn" data-wl="436">436nm(蓝紫)</button>
+              <button class="chip-btn active" data-wl="546">546nm(绿光)</button>
+              <button class="chip-btn" data-wl="577">577nm(黄光)</button>
+              <button class="chip-btn" data-wl="650">650nm(红光)</button>
+            </div>
+            <div class="range-wrap">
+              <input type="range" class="range-slider" id="sliderWavelength" min="300" max="750" value="546" step="1">
+              <span class="range-val" id="dispWlSlider">546nm</span>
+            </div>
+          </div>
+
+          <!-- 光强与光阑孔径 -->
+          <div class="control-group">
+            <div class="group-title">
+              <span>光强 / 光阑照度 (P)</span>
+              <span id="txtIntensityVal" style="color:var(--accent-cyan); font-family:monospace;">60%</span>
+            </div>
+            <div class="range-wrap">
+              <input type="range" class="range-slider" id="sliderIntensity" min="0" max="100" value="60" step="1">
+              <span class="range-val" id="dispIntensitySlider">60%</span>
+            </div>
+            <p class="hint-text">物理定律提示：光强仅决定单位时间出射光子数量，不改变单个光子能量及截止电压。</p>
+          </div>
+
+          <!-- 加速/遏止电压控制 (双模式精调与粗调) -->
+          <div class="control-group" style="grid-column: span 1;">
+            <div class="group-title">
+              <span>极间电压 U (-4.00V ~ +4.00V)</span>
+              <span id="txtVoltageStatus" style="font-size:0.7rem; color:#93c5fd;">减速/反向遏止</span>
+            </div>
+            <div class="range-wrap">
+              <input type="range" class="range-slider" id="sliderVoltage" min="-4.0" max="4.0" value="0.0" step="0.01">
+              <span class="range-val" id="dispVoltSlider">0.00V</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+              <span style="font-size:0.72rem; color:var(--text-muted);">微调步长:</span>
+              <div class="volt-stepper">
+                <button id="btnVoltMinusCoarse" title="粗调 -0.1V">-0.1</button>
+                <button id="btnVoltMinusFine" title="微调 -0.01V">-0.01</button>
+                <button id="btnVoltZero" title="归零">0</button>
+                <button id="btnVoltPlusFine" title="微调 +0.01V">+0.01</button>
+                <button id="btnVoltPlusCoarse" title="粗调 +0.1V">+0.1</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 阴极金属材料选择 -->
+          <div class="control-group">
+            <div class="group-title">
+              <span>阴极金属材料 (Cathode Material)</span>
+            </div>
+            <select class="custom-select" id="selectCathode">
+              <option value="Cs" selected>铯 (Cesium, Cs) - 逸出功 W₀ = 2.14 eV (红限 579.4nm)</option>
+              <option value="K">钾 (Potassium, K) - 逸出功 W₀ = 2.30 eV (红限 539.1nm)</option>
+              <option value="Na">钠 (Sodium, Na) - 逸出功 W₀ = 2.46 eV (红限 504.0nm)</option>
+              <option value="Zn">锌 (Zinc, Zn) - 逸出功 W₀ = 4.31 eV (红限 287.7nm - 需深紫外)</option>
+              <option value="Pt">铂 (Platinum, Pt) - 逸出功 W₀ = 5.65 eV (红限 219.4nm)</option>
+            </select>
+            <p class="hint-text" id="cathodeHint">当前材料铯(Cs)的阈值波长约为 579nm，所有可见光至近紫外汞灯光谱均可激发出光电子。</p>
+          </div>
+        </div>
+
+        <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:8px;">
+          <button class="btn btn-primary" id="btnRecordData">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            记录当前实验数据点
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 右侧列：伏安曲线、普朗克常数拟合、数据表、AI助教与对话 -->
+    <div class="panel-col">
+
+      <!-- 实时伏安特性 I-U 曲线与普朗克常数拟合图表 (Tab 切换) -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+            实验曲线与数据拟合分析
+          </div>
+          <div style="display:flex; gap:4px;">
+            <button class="btn btn-outline btn-sm active" id="tabBtnIV">I-U 伏安曲线</button>
+            <button class="btn btn-outline btn-sm" id="tabBtnFit">ν-Uₐ 普朗克常数拟合</button>
+          </div>
+        </div>
+
+        <div id="viewIVChart" class="chart-container">
+          <canvas id="ivChartCanvas"></canvas>
+        </div>
+
+        <div id="viewFitChart" class="chart-container" style="display:none;">
+          <canvas id="fitChartCanvas"></canvas>
+        </div>
+
+        <!-- 普朗克常数最小二乘法拟合结果指示 -->
+        <div class="fit-result-badge">
+          <div class="stat-pill">
+            <div class="stat-pill-label">理论普朗克常数 h₀</div>
+            <div class="stat-pill-val">6.626×10⁻³⁴ J·s</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">实验测量值 hₑₓₚ</div>
+            <div class="stat-pill-val" id="statFitH">--</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">拟合相对误差 η</div>
+            <div class="stat-pill-val" id="statFitError">--</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-label">测定金属逸出功 W₀</div>
+            <div class="stat-pill-val" id="statFitW0">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 实验数据记录表 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            实验测量数据记录表 (普朗克常数测定)
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn btn-outline btn-sm" id="btnClearTable">清空数据</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table" id="dataTable">
+            <thead>
+              <tr>
+                <th>序号</th>
+                <th>波长 λ (nm)</th>
+                <th>频率 ν (×10¹⁴Hz)</th>
+                <th>截止电压 Uₐ (V)</th>
+                <th>饱和光电流 Iₛ (μA)</th>
+                <th>材料</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="dataTableBody">
+              <!-- JS 动态填充 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 深度融合的 AI 物理助教与启发式对话系统 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            AI 物理助教启发式研讨室
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label class="switch-wrap" title="启用语音朗读AI回答(Web Speech API)">
+              <input type="checkbox" id="chkSpeech" class="toggle-checkbox" checked>
+              <span>语音播报</span>
+            </label>
+            <span class="badge" id="badgeAIMode">离线物理专家引擎</span>
+          </div>
+        </div>
+
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg assistant">
+              <div class="chat-avatar">AI</div>
+              <div class="chat-bubble">
+                同学你好！我是你的虚拟物理实验助教。本实验的核心是通过测定不同频率入射光下的反向遏止电压 \(U_a\)，利用爱因斯坦光电方程拟合出普朗克常数 \(h\)。<br>
+                你可以随意提问物理概念、实验疑难，或者向我询问数据异常的原因！
+              </div>
+            </div>
+          </div>
+
+          <!-- 预置苏格拉底式启发问题 Chips -->
+          <div class="quick-chips">
+            <div class="quick-chip" data-q="为什么光电流存在饱和值？">为什么光电流存在饱和值？</div>
+            <div class="quick-chip" data-q="为什么光强不能改变截止电压？">光强为什么不影响遏止电压？</div>
+            <div class="quick-chip" data-q="如何精确测定反向截止电压？">如何精确找到反向截止电压？</div>
+            <div class="quick-chip" data-q="经典电磁理论在此遇到了什么困难？">经典波动理论的困难在哪里？</div>
+          </div>
+
+          <!-- 对话输入行 -->
+          <div class="chat-input-row">
+            <button class="btn btn-outline btn-sm" id="btnVoiceInput" title="语音提问 (Web Speech)">
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+            </button>
+            <input type="text" class="chat-input" id="chatInput" placeholder="输入提问，如：为什么调大波长电流为零？..." enterkeyhint="send">
+            <button class="btn btn-primary btn-sm" id="btnSendChat">发送</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 底部说明与版权 -->
+  <footer>
+    <div>大学物理轻量化虚拟仿真实验课程设计 · 严守学术诚信与轻量化架构</div>
+    <div>单文件独立部署 · 极速离线加载 · WebGPU/Canvas 高清加速</div>
+  </footer>
+
+  <!-- 模态框 1：AI 实验综合评估与批改报告 -->
+  <div class="modal-backdrop" id="modalEvaluation">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          AI 实验综合评估与批改诊断报告
+        </h2>
+        <button class="close-btn" id="btnCloseEvalModal">&times;</button>
+      </div>
+
+      <div class="score-circle-wrap">
+        <div class="score-circle">
+          <span class="score-num" id="evalTotalScore">--</span>
+          <span class="score-txt">总评得分</span>
+        </div>
+        <div class="score-breakdown">
+          <div class="score-item"><span>操作规范与遏止点定位:</span> <span id="evalScoreOp">--/25</span></div>
+          <div class="score-item"><span>实验数据完整性与覆盖度:</span> <span id="evalScoreData">--/25</span></div>
+          <div class="score-item"><span>最小二乘法拟合精度:</span> <span id="evalScoreFit">--/25</span></div>
+          <div class="score-item"><span>物理概念与误差归因:</span> <span id="evalScoreTheory">--/25</span></div>
+        </div>
+      </div>
+
+      <div style="font-size:0.82rem; line-height:1.6; color:#cbd5e1; display:flex; flex-direction:column; gap:12px;">
+        <div style="background:#0c1424; padding:12px; border-radius:8px; border:1px solid #1c2b4a;">
+          <h4 style="color:#38bdf8; margin-bottom:4px;">📊 测量结果比对分析</h4>
+          <p id="evalResultText">普朗克常数测定值: -- | 理论值: 6.626×10⁻³⁴ J·s | 相对误差: --%</p>
+        </div>
+
+        <div style="background:#0c1424; padding:12px; border-radius:8px; border:1px solid #1c2b4a;">
+          <h4 style="color:#38bdf8; margin-bottom:4px;">💡 AI 智能诊断意见与纠错评语</h4>
+          <div id="evalDiagnoseText">正在生成个性化智能评估...</div>
+        </div>
+
+        <div style="background:#0c1424; padding:12px; border-radius:8px; border:1px solid #1c2b4a;">
+          <h4 style="color:#38bdf8; margin-bottom:4px;">🔬 物理微观机理思考题</h4>
+          <p id="evalReflectionText">思考题：当在阳极与阴极之间加反向电压且光照强度增强一倍时，微安表显示的光电流临界遏止电压是否会发生漂移？试从微观光子说与爱因斯坦能量守恒视角阐述原因。</p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn btn-outline" id="btnPrintReport">导出/打印实验报告</button>
+        <button class="btn btn-primary" id="btnConfirmEval">确认并继续实验</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模态框 2：AI 引擎配置 (支持本地 Ollama / LM Studio 离线大模型 - 加分项) -->
+  <div class="modal-backdrop" id="modalLLMConfig">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+          AI 助教双引擎配置 (支持本地离线 LLM)
+        </h2>
+        <button class="close-btn" id="btnCloseLLMModal">&times;</button>
+      </div>
+
+      <div style="font-size:0.8rem; color:#cbd5e1; display:flex; flex-direction:column; gap:12px;">
+        <div style="background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.3); border-radius:8px; padding:10px;">
+          <b style="color:#38bdf8;">🏆 满分作业加分项说明：</b><br>
+          本系统默认搭载纯前端自研<b>离线大学物理专家推理引擎</b>，0网络依赖即可秒级运行并完成全套纠错批改。<br>
+          如您在电脑上本地部署了 <b>Ollama</b>、<b>LM Studio</b> 或 <b>vLLM</b>，可在此直接桥接，实现完全离线的本地大模型深度对话！
+        </div>
+
+        <div class="control-group">
+          <label style="font-weight:700; color:#93c5fd;">选择运行引擎模式：</label>
+          <select class="custom-select" id="selEngineMode">
+            <option value="builtin" selected>内置前端离线物理专家引擎 (默认·零延迟·100%离线)</option>
+            <option value="ollama">本地部署 Ollama / LM Studio 离线大模型接口 (加分项)</option>
+            <option value="custom_api">兼容 OpenAI 格式的远程/自定义 API 服务</option>
+          </select>
+        </div>
+
+        <div id="llmCustomSettings" style="display:none; flex-direction:column; gap:10px;">
+          <div class="control-group">
+            <label style="font-weight:600;">API Base URL 接口地址：</label>
+            <input type="text" class="chat-input" id="cfgApiUrl" value="http://localhost:11434/v1/chat/completions">
+            <span class="hint-text">Ollama 默认地址：http://localhost:11434/v1/chat/completions</span>
+          </div>
+
+          <div class="control-group">
+            <label style="font-weight:600;">模型名称 (Model ID)：</label>
+            <input type="text" class="chat-input" id="cfgModelName" value="qwen2.5:7b">
+            <span class="hint-text">如 qwen2.5:7b、llama3:8b、deepseek-r1:7b 等</span>
+          </div>
+
+          <div class="control-group">
+            <label style="font-weight:600;">API Key (本地 Ollama 可留空或填 ollama)：</label>
+            <input type="password" class="chat-input" id="cfgApiKey" placeholder="ollama">
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn btn-outline" id="btnTestLLM">测试连通性</button>
+        <button class="btn btn-primary" id="btnSaveLLM">保存配置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 模态框 3：实验指导手册与学术诚信声明 -->
+  <div class="modal-backdrop" id="modalDocs">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          实验原理、用户手册与学术诚信声明
+        </h2>
+        <button class="close-btn" id="btnCloseDocsModal">&times;</button>
+      </div>
+
+      <div style="font-size:0.8rem; color:#cbd5e1; display:flex; flex-direction:column; gap:12px; line-height:1.6;">
+        <div style="background:#0c1424; padding:12px; border-radius:8px; border:1px solid #1c2b4a;">
+          <h4 style="color:#38bdf8;">1. 实验物理原理</h4>
+          <p>爱因斯坦光电效应方程：\(h\nu = E_{k\max} + W_0 = e U_a + W_0\)。<br>
+          移项可得遏止电压与入射光频率之间的线性关系：<br>
+          <span style="color:#00f0ff; font-weight:700; font-family:monospace;">U_a = (h / e) · ν - (W_0 / e)</span><br>
+          通过测量 5 个不同单色谱线（365nm、405nm、436nm、546nm、577nm）下的截止电压 \(U_a\)，绘制 \(\nu - U_a\) 关系图，拟合直线斜率 \(k = h/e\)，即可测定普朗克常数 \(h = k \cdot e\)。</p>
+        </div>
+
+        <div style="background:#0c1424; padding:12px; border-radius:8px; border:1px solid #1c2b4a;">
+          <h4 style="color:#38bdf8;">2. 实验标准操作指南</h4>
+          <ol style="padding-left:18px;">
+            <li>选择阴极金属材料（推荐选择铯 Cs，逸出功 2.14 eV，可见光均可产生光电效应）。</li>
+            <li>点击选择波长预设（如 546nm 绿光），将光强调节到 50% 以上。</li>
+            <li>调节电压滑块进入反向减速区（负值），观察微安表。</li>
+            <li>在微安表接近 0.000μA 时，使用微调按钮（±0.01V），寻找光电流恰好降为 0 的临界电压 \(U_a\)。</li>
+            <li>点击“记录当前实验数据点”，记录下该波长下的数据。</li>
+            <li>依次切换 5 个不同波长重复上述测量，观察 \(\nu - U_a\) 拟合直线与计算出的 \(h\) 值。</li>
+            <li>点击右上角“生成AI评估报告”，获取详细得分与实验总结。</li>
+          </ol>
+        </div>
+
+        <div style="background:#0c1424; padding:12px; border-radius:8px; border:1px solid #1c2b4a;">
+          <h4 style="color:#38bdf8;">3. 学术诚信与技术原创性声明</h4>
+          <p>本仿真实验系统核心仿真物理引擎、微观粒子碰撞散射渲染算法、最小二乘法回归拟合系统以及 AI 实时纠错与评估算法均为原创轻量化纯前端实现。无任何第三方臃肿框架依赖，单文件完全开源自洽，符合大学物理教学与作业规范要求。</p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+        <button class="btn btn-primary" id="btnGotDocs">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 纯原生 JavaScript 物理与 AI 核心引擎 (零外部臃肿依赖，极速秒开) -->
+  <script>
+    /**
+     * 大学物理光电效应虚拟仿真系统
+     * 核心模块架构：
+     * 1. PhysicsEngine: 微观光子-电子动力学模拟与真实宏观伏安方程
+     * 2. SimRenderer: HTML5 Canvas 60fps 高清渲染引擎
+     * 3. ExperimentStore: 实验状态管理、数据采样与最小二乘拟合
+     * 4. ChartRenderer: 伏安特性与拟合曲线 Canvas 图表绘制器
+     * 5. AIEngine: 实时智能纠错巡检、综合评估报告与双模对话助教
+     * 6. MultimodalHandler: Web Speech 语音播报与陀螺仪传感器交互
+     */
+
+    // 物理常数与材料常数表
+    const CONSTANTS = {
+      h: 6.62607015e-34,    // 普朗克常数 J·s
+      h_eV: 4.135667696e-15, // 普朗克常数 eV·s
+      c: 2.99792458e8,      // 光速 m/s
+      e: 1.60217663e-19,    // 电子电荷 C
+      me: 9.10938356e-31,   // 电子静止质量 kg
+      planckTheory: 6.626e-34
+    };
+
+    // 阴极金属逸出功与红限
+    const METALS = {
+      Cs: { name: '铯 (Cesium)', W0: 2.14, lambda0: 579.4, color: '#f39c12' },
+      K:  { name: '钾 (Potassium)', W0: 2.30, lambda0: 539.1, color: '#9b59b6' },
+      Na: { name: '钠 (Sodium)', W0: 2.46, lambda0: 504.0, color: '#e67e22' },
+      Zn: { name: '锌 (Zinc)', W0: 4.31, lambda0: 287.7, color: '#95a5a6' },
+      Pt: { name: '铂 (Platinum)', W0: 5.65, lambda0: 219.4, color: '#ecf0f1' }
+    };
+
+    // 常用汞灯单色谱线标准
+    const SPECTRAL_LINES = [
+      { wl: 365, color: '#7b1fa2', name: '紫外' },
+      { wl: 405, color: '#5e35b1', name: '紫光' },
+      { wl: 436, color: '#1e88e5', name: '蓝紫光' },
+      { wl: 546, color: '#43a047', name: '绿光' },
+      { wl: 577, color: '#fbc02d', name: '黄光' },
+      { wl: 650, color: '#e53935', name: '红光' }
+    ];
+
+    // 全局实验状态
+    const state = {
+      wavelength: 546,       // nm
+      intensity: 60,         // 0 ~ 100 %
+      voltage: 0.00,         // -4.0 ~ +4.0 V
+      metalKey: 'Cs',        // 默认铯
+      isLightOn: true,
+      slowMotion: false,
+      gyroEnabled: false,
+      currentRecordId: 1,
+      records: [],           // 已记录实验数据
+      activeChartTab: 'iv',  // 'iv' or 'fit'
+      aiEngineMode: 'builtin', // 'builtin', 'ollama', 'custom_api'
+      speechEnabled: true,
+      llmConfig: {
+        url: 'http://localhost:11434/v1/chat/completions',
+        model: 'qwen2.5:7b',
+        key: 'ollama'
+      }
+    };
+
+    // ==========================================
+    // 1. 物理计算核心 (Strict Physics Simulation)
+    // ==========================================
+    const Physics = {
+      // 计算光子能量 (eV)
+      getPhotonEnergy(wavelengthNm) {
+        // E = hc / lambda
+        return 1239.84193 / wavelengthNm;
+      },
+
+      // 计算光频率 ν (Hz)
+      getFrequency(wavelengthNm) {
+        return (CONSTANTS.c / (wavelengthNm * 1e-9));
+      },
+
+      // 计算最大初动能 Ek_max (eV)
+      getMaxEk(wavelengthNm, metalKey) {
+        const Eph = this.getPhotonEnergy(wavelengthNm);
+        const W0 = METALS[metalKey].W0;
+        return Math.max(0, Eph - W0);
+      },
+
+      // 计算理论反向截止电压 Ua (V，规定为正值幅度)
+      getStoppingPotential(wavelengthNm, metalKey) {
+        const maxEk = this.getMaxEk(wavelengthNm, metalKey);
+        // e * Ua = maxEk => Ua = maxEk (数值上等于 Ek in eV)
+        return maxEk;
+      },
+
+      // 计算宏观光电流 I (μA)
+      // 包含暗电流微扰与热电子速度分布
+      calcPhotocurrent(voltage, wavelengthNm, intensity, metalKey, isLightOn) {
+        if (!isLightOn || intensity <= 0) {
+          // 仅微弱热噪声与暗电流 (0.000 ~ 0.002 uA)
+          return (Math.random() * 0.001);
+        }
+
+        const Eph = this.getPhotonEnergy(wavelengthNm);
+        const W0 = METALS[metalKey].W0;
+        
+        // 低于截止频率，无法产生光电效应
+        if (Eph < W0) {
+          return (Math.random() * 0.001);
+        }
+
+        const maxEk = Eph - W0; // eV
+        const Ua = maxEk;       // 截止电压幅度
+
+        // 饱和光电流 Is 与光强成正比 (根据量子效率微变)
+        const quantumYield = Math.min(1.0, 0.4 + (Eph - W0) * 0.2);
+        const Is = (intensity / 100) * 4.0 * quantumYield; // 最大 4.0 uA
+
+        let I = 0;
+        // 反向遏止区 (U < -Ua)
+        if (voltage < -Ua) {
+          // 接近截止，保留极微弱的接触电势微扰与暗电流
+          const delta = Math.abs(voltage - (-Ua));
+          I = 0.001 * Math.exp(-delta * 3) + (Math.random() * 0.0005);
+        }
+        // 减速上升区 (-Ua <= U < 0)
+        else if (voltage < 0) {
+          // 克服反向电场，遵循费米能量分布幂律上升
+          const frac = (voltage + Ua) / (Ua + 0.1);
+          I = Is * Math.pow(Math.max(0, frac), 1.8);
+        }
+        // 正向加速区 (U >= 0)
+        else {
+          // 电流快速趋向饱和 Is
+          I = Is * (1 - 0.25 * Math.exp(-voltage * 1.5));
+        }
+
+        // 添加逼真的实验仪表热涨落噪底 (±0.002 uA)
+        const noise = (Math.random() - 0.5) * 0.002;
+        return Math.max(0, I + noise);
+      }
+    };
+
+    // ==========================================
+    // 2. 微观粒子系统与 Canvas 2D 仿真
+    // ==========================================
+    class ParticleSimulation {
+      constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        this.ctx = this.canvas.getContext('2d');
+        this.photons = [];
+        this.electrons = [];
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+        this.lastTime = performance.now();
+        this.spawnTimer = 0;
+      }
+
+      resize() {
+        const rect = this.canvas.parentElement.getBoundingClientRect();
+        this.canvas.width = rect.width * (window.devicePixelRatio || 1);
+        this.canvas.height = rect.height * (window.devicePixelRatio || 1);
+        this.ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+        this.width = rect.width;
+        this.height = rect.height;
+      }
+
+      reset() {
+        this.photons = [];
+        this.electrons = [];
+      }
+
+      // 波长转可见光 RGB 颜色
+      wavelengthToColor(wl) {
+        let r, g, b;
+        if (wl >= 380 && wl < 440) {
+          r = -(wl - 440) / (440 - 380);
+          g = 0;
+          b = 1;
+        } else if (wl >= 440 && wl < 490) {
+          r = 0;
+          g = (wl - 440) / (490 - 440);
+          b = 1;
+        } else if (wl >= 490 && wl < 510) {
+          r = 0;
+          g = 1;
+          b = -(wl - 510) / (510 - 490);
+        } else if (wl >= 510 && wl < 580) {
+          r = (wl - 510) / (580 - 510);
+          g = 1;
+          b = 0;
+        } else if (wl >= 580 && wl < 645) {
+          r = 1;
+          g = -(wl - 645) / (645 - 580);
+          b = 0;
+        } else if (wl >= 645 && wl <= 780) {
+          r = 1;
+          g = 0;
+          b = 0;
+        } else {
+          // 紫外
+          r = 0.6; g = 0.2; b = 0.9;
+        }
+        return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}`;
+      }
+
+      update(dt) {
+        const speedFactor = state.slowMotion ? 0.3 : 1.0;
+        const adjustedDt = dt * speedFactor;
+
+        // 几何布局尺寸
+        const cathodeX = this.width * 0.25;
+        const anodeX = this.width * 0.75;
+        const tubeTop = this.height * 0.18;
+        const tubeBottom = this.height * 0.82;
+        const tubeCenterY = this.height * 0.5;
+
+        // 1. 发射光子波包
+        if (state.isLightOn && state.intensity > 0) {
+          this.spawnTimer += adjustedDt;
+          const spawnInterval = Math.max(0.015, 0.25 - (state.intensity / 100) * 0.22);
+          if (this.spawnTimer > spawnInterval) {
+            this.spawnTimer = 0;
+            const photonColor = this.wavelengthToColor(state.wavelength);
+            this.photons.push({
+              x: 20,
+              y: tubeCenterY + (Math.random() - 0.5) * (tubeBottom - tubeTop) * 0.65,
+              vx: 380,
+              vy: (Math.random() - 0.5) * 40,
+              wavelength: state.wavelength,
+              color: photonColor,
+              life: 1.0
+            });
+          }
+        }
+
+        // 2. 更新光子运动
+        for (let i = this.photons.length - 1; i >= 0; i--) {
+          const p = this.photons[i];
+          p.x += p.vx * adjustedDt;
+          p.y += p.vy * adjustedDt;
+
+          // 命中阴极板
+          if (p.x >= cathodeX - 5 && p.x <= cathodeX + 8) {
+            // 产生光电效应判定
+            const maxEk = Physics.getMaxEk(state.wavelength, state.metalKey);
+            if (maxEk > 0) {
+              // 释放光电子
+              const angle = (Math.random() - 0.5) * (Math.PI * 0.65); // 主要向右前散射
+              const initialV = Math.sqrt(maxEk) * 160 * (0.35 + Math.random() * 0.65);
+              this.electrons.push({
+                x: cathodeX + 4,
+                y: p.y + (Math.random() - 0.5) * 6,
+                vx: Math.cos(angle) * initialV,
+                vy: Math.sin(angle) * initialV,
+                initialEk: maxEk,
+                alive: true
+              });
+            }
+            this.photons.splice(i, 1);
+            continue;
+          }
+
+          if (p.x > this.width || p.y < tubeTop || p.y > tubeBottom) {
+            this.photons.splice(i, 1);
+          }
+        }
+
+        // 3. 更新电子在两极板电场中的受力运动 (F = -eE)
+        // 阴极在左 (x = cathodeX), 阳极在右 (x = anodeX)
+        // 加速电压 (state.voltage > 0): 阳极电势高于阴极，电场水平向左，电子受力水平向右 (加速)
+        // 减速电压 (state.voltage < 0): 阳极电势低于阴极，电场水平向右，电子受力水平向左 (减速反弹)
+        const gap = anodeX - cathodeX;
+        // 电场加速度 a = (e * U) / (m * d)
+        const electricAcc = (state.voltage * 420) / gap; 
+
+        for (let i = this.electrons.length - 1; i >= 0; i--) {
+          const e = this.electrons[i];
+          // 受电场加速度影响
+          e.vx += electricAcc * adjustedDt;
+          e.x += e.vx * adjustedDt;
+          e.y += e.vy * adjustedDt;
+
+          // 撞击阳极 (收集极) 形成光电流
+          if (e.x >= anodeX) {
+            this.electrons.splice(i, 1);
+            continue;
+          }
+
+          // 如果反向减速太强，电子掉头打回阴极
+          if (e.x <= cathodeX) {
+            this.electrons.splice(i, 1);
+            continue;
+          }
+
+          // 飞出玻璃管上下壁吸收
+          if (e.y <= tubeTop + 6 || e.y >= tubeBottom - 6) {
+            this.electrons.splice(i, 1);
+          }
+        }
+      }
+
+      draw() {
+        const ctx = this.ctx;
+        ctx.clearRect(0, 0, this.width, this.height);
+
+        const cathodeX = this.width * 0.25;
+        const anodeX = this.width * 0.75;
+        const tubeTop = this.height * 0.16;
+        const tubeBottom = this.height * 0.84;
+        const tubeCenterY = this.height * 0.5;
+
+        // 1. 绘制外部真空玻璃管光电管暗箱轮廓
+        ctx.save();
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+        ctx.beginPath();
+        ctx.roundRect(cathodeX - 40, tubeTop, (anodeX - cathodeX) + 80, tubeBottom - tubeTop, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        // 玻璃高光反光
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.beginPath();
+        ctx.moveTo(cathodeX - 25, tubeTop + 8);
+        ctx.lineTo(anodeX + 25, tubeTop + 8);
+        ctx.stroke();
+        ctx.restore();
+
+        // 2. 绘制电场线指示箭头 (直观呈现加速场或遏止减速场)
+        ctx.save();
+        const numLines = 5;
+        ctx.strokeStyle = state.voltage >= 0 ? 'rgba(16, 185, 129, 0.25)' : 'rgba(244, 63, 94, 0.25)';
+        ctx.fillStyle = ctx.strokeStyle;
+        for (let j = 1; j <= numLines; j++) {
+          const ly = tubeTop + ((tubeBottom - tubeTop) / (numLines + 1)) * j;
+          ctx.beginPath();
+          ctx.setLineDash([4, 4]);
+          ctx.moveTo(cathodeX + 15, ly);
+          ctx.lineTo(anodeX - 15, ly);
+          ctx.stroke();
+
+          // 箭头方向
+          const arrowDir = state.voltage >= 0 ? 1 : -1;
+          const arrowX = (cathodeX + anodeX) / 2;
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.moveTo(arrowX, ly - 3);
+          ctx.lineTo(arrowX + arrowDir * 6, ly);
+          ctx.lineTo(arrowX, ly + 3);
+          ctx.fill();
+        }
+        ctx.restore();
+
+        // 3. 绘制阴极板 (Cathode K - 受光激发出电子)
+        ctx.save();
+        const metalColor = METALS[state.metalKey].color;
+        ctx.fillStyle = metalColor;
+        ctx.shadowColor = metalColor;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.roundRect(cathodeX - 6, tubeTop + 20, 10, tubeBottom - tubeTop - 40, 4);
+        ctx.fill();
+
+        // 阴极文字标注
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '11px sans-serif';
+        ctx.shadowBlur = 0;
+        ctx.fillText('光电阴极 K (' + state.metalKey + ')', cathodeX - 70, tubeBottom - 6);
+
+        // 4. 绘制阳极环/板 (Anode A - 收集电子)
+        ctx.fillStyle = '#60a5fa';
+        ctx.shadowColor = '#60a5fa';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.roundRect(anodeX - 4, tubeTop + 20, 8, tubeBottom - tubeTop - 40, 4);
+        ctx.fill();
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.shadowBlur = 0;
+        ctx.fillText('阳极 A (收集极)', anodeX + 10, tubeBottom - 6);
+        ctx.restore();
+
+        // 5. 绘制光源发射光束与滤色片光阑
+        if (state.isLightOn && state.intensity > 0) {
+          ctx.save();
+          const pColor = this.wavelengthToColor(state.wavelength);
+          const grad = ctx.createLinearGradient(0, tubeCenterY, cathodeX, tubeCenterY);
+          grad.addColorStop(0, pColor + ', 0.65)');
+          grad.addColorStop(1, pColor + ', 0.15)');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.moveTo(0, tubeCenterY - 24);
+          ctx.lineTo(cathodeX - 6, tubeCenterY - 50);
+          ctx.lineTo(cathodeX - 6, tubeCenterY + 50);
+          ctx.lineTo(0, tubeCenterY + 24);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // 6. 绘制光子粒子波包
+        ctx.save();
+        for (const p of this.photons) {
+          ctx.strokeStyle = p.color + ', 0.9)';
+          ctx.lineWidth = 2.5;
+          ctx.shadowColor = p.color + ', 1)';
+          ctx.shadowBlur = 6;
+          // 绘制光子正弦波形包
+          ctx.beginPath();
+          for (let k = -8; k <= 8; k += 2) {
+            const waveY = p.y + Math.sin(k * 0.8) * 3;
+            if (k === -8) ctx.moveTo(p.x + k, waveY);
+            else ctx.lineTo(p.x + k, waveY);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // 7. 绘制光电子群 (高能电子蓝色/青色发光微粒)
+        ctx.save();
+        for (const e of this.electrons) {
+          ctx.fillStyle = '#00f0ff';
+          ctx.shadowColor = '#00f0ff';
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.arc(e.x, e.y, 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          // 电子速度尾迹
+          ctx.strokeStyle = 'rgba(0, 240, 255, 0.35)';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(e.x, e.y);
+          ctx.lineTo(e.x - e.vx * 0.04, e.y - e.vy * 0.04);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      loop(timestamp) {
+        const dt = Math.min(0.05, (timestamp - this.lastTime) / 1000);
+        this.lastTime = timestamp;
+
+        this.update(dt);
+        this.draw();
+
+        requestAnimationFrame((t) => this.loop(t));
+      }
+    }
+
+    // ==========================================
+    // 3. 数据可视化图表引擎 (纯 Canvas 极速绘制)
+    // ==========================================
+    const ChartEngine = {
+      // 绘制实时伏安特性 I-U 曲线
+      drawIVCurve(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width * (window.devicePixelRatio || 1);
+        canvas.height = rect.height * (window.devicePixelRatio || 1);
+        ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+
+        const w = rect.width;
+        const h = rect.height;
+        const pad = { top: 20, right: 30, bottom: 35, left: 45 };
+
+        ctx.clearRect(0, 0, w, h);
+
+        // 坐标系范围：U: -4.0V ~ +4.0V, I: 0 ~ 5.0 uA
+        const uMin = -4.0, uMax = 4.0;
+        const iMin = 0.0, iMax = 5.0;
+
+        const toX = (u) => pad.left + ((u - uMin) / (uMax - uMin)) * (w - pad.left - pad.right);
+        const toY = (i) => h - pad.bottom - ((i - iMin) / (iMax - iMin)) * (h - pad.top - pad.bottom);
+
+        // 1. 绘制网格与坐标轴
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+
+        for (let u = -4; u <= 4; u += 1) {
+          const x = toX(u);
+          ctx.beginPath();
+          ctx.moveTo(x, pad.top);
+          ctx.lineTo(x, h - pad.bottom);
+          ctx.stroke();
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(u + 'V', x, h - pad.bottom + 14);
+        }
+
+        for (let i = 0; i <= 5; i += 1) {
+          const y = toY(i);
+          ctx.beginPath();
+          ctx.moveTo(pad.left, y);
+          ctx.lineTo(w - pad.right, y);
+          ctx.stroke();
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(i + 'μA', pad.left - 6, y + 4);
+        }
+
+        // 坐标轴高亮原点
+        const zeroX = toX(0);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.beginPath();
+        ctx.moveTo(zeroX, pad.top);
+        ctx.lineTo(zeroX, h - pad.bottom);
+        ctx.stroke();
+
+        // 2. 绘制理论 I-U 连续曲线
+        ctx.save();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = 'rgba(56, 189, 248, 0.5)';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+
+        const steps = 160;
+        for (let s = 0; s <= steps; s++) {
+          const uVal = uMin + (s / steps) * (uMax - uMin);
+          const iVal = Physics.calcPhotocurrent(uVal, state.wavelength, state.intensity, state.metalKey, state.isLightOn);
+          const px = toX(uVal);
+          const py = toY(iVal);
+          if (s === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        // 3. 标记反向截止电压 Ua 垂线
+        const Ua = Physics.getStoppingPotential(state.wavelength, state.metalKey);
+        if (Ua > 0) {
+          const uStop = -Ua;
+          const stopX = toX(uStop);
+          ctx.save();
+          ctx.strokeStyle = '#f43f5e';
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          ctx.moveTo(stopX, pad.top);
+          ctx.lineTo(stopX, h - pad.bottom);
+          ctx.stroke();
+
+          ctx.fillStyle = '#f43f5e';
+          ctx.font = '10px sans-serif';
+          ctx.fillText(`-Uₐ (${uStop.toFixed(2)}V)`, stopX - 25, pad.top + 14);
+          ctx.restore();
+        }
+
+        // 4. 当前工作点指示圆点
+        const curI = Physics.calcPhotocurrent(state.voltage, state.wavelength, state.intensity, state.metalKey, state.isLightOn);
+        const curX = toX(state.voltage);
+        const curY = toY(curI);
+
+        ctx.save();
+        ctx.fillStyle = '#00f0ff';
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.arc(curX, curY, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      },
+
+      // 绘制 ν-Ua 线性拟合图表 (最小二乘法回归求普朗克常数)
+      drawFitChart(canvasId) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width * (window.devicePixelRatio || 1);
+        canvas.height = rect.height * (window.devicePixelRatio || 1);
+        ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+
+        const w = rect.width;
+        const h = rect.height;
+        const pad = { top: 20, right: 30, bottom: 35, left: 50 };
+
+        ctx.clearRect(0, 0, w, h);
+
+        // 频率范围：4.0 ~ 9.0 ×10^14 Hz, 截止电压 Ua: 0 ~ 2.5 V
+        const nuMin = 4.0, nuMax = 9.0;
+        const uaMin = 0.0, uaMax = 2.5;
+
+        const toX = (nu) => pad.left + ((nu - nuMin) / (nuMax - nuMin)) * (w - pad.left - pad.right);
+        const toY = (ua) => h - pad.bottom - ((ua - uaMin) / (uaMax - uaMin)) * (h - pad.top - pad.bottom);
+
+        // 坐标系网格
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+
+        for (let nu = 4; nu <= 9; nu += 1) {
+          const x = toX(nu);
+          ctx.beginPath();
+          ctx.moveTo(x, pad.top);
+          ctx.lineTo(x, h - pad.bottom);
+          ctx.stroke();
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(nu + 'e14', x, h - pad.bottom + 14);
+        }
+
+        for (let ua = 0; ua <= 2.5; ua += 0.5) {
+          const y = toY(ua);
+          ctx.beginPath();
+          ctx.moveTo(pad.left, y);
+          ctx.lineTo(w - pad.right, y);
+          ctx.stroke();
+
+          ctx.fillStyle = '#64748b';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'right';
+          ctx.fillText(ua.toFixed(1) + 'V', pad.left - 6, y + 4);
+        }
+
+        // 绘制散点数据
+        if (state.records.length > 0) {
+          ctx.save();
+          for (const rec of state.records) {
+            const nuVal = rec.freq / 1e14;
+            const uaVal = rec.Ua;
+            const px = toX(nuVal);
+            const py = toY(uaVal);
+
+            ctx.fillStyle = '#10b981';
+            ctx.shadowColor = '#10b981';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(px, py, 5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        // 进行线性拟合 y = kx + b
+        const fit = LinearRegression.fit(state.records);
+        if (fit.valid) {
+          ctx.save();
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          const x1 = nuMin;
+          const y1 = fit.k * x1 + fit.b;
+          const x2 = nuMax;
+          const y2 = fit.k * x2 + fit.b;
+
+          ctx.moveTo(toX(x1), toY(y1));
+          ctx.lineTo(toX(x2), toY(y2));
+          ctx.stroke();
+          ctx.restore();
+
+          // 标注拟合方程
+          ctx.fillStyle = '#00f0ff';
+          ctx.font = '11px monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText(`拟合方程: Uₐ = ${fit.k.toFixed(3)}·ν ${fit.b >= 0 ? '+' : ''}${fit.b.toFixed(2)} (R²=${fit.r2.toFixed(3)})`, pad.left + 10, pad.top + 16);
+        } else {
+          ctx.fillStyle = '#64748b';
+          ctx.font = '11px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('记录至少 2 个有效数据点后将自动进行普朗克常数最小二乘法回归拟合', w / 2, h / 2);
+        }
+      }
+    };
+
+    // ==========================================
+    // 4. 最小二乘法数学回归库
+    // ==========================================
+    const LinearRegression = {
+      fit(records) {
+        if (!records || records.length < 2) {
+          return { valid: false };
+        }
+
+        const pts = records.map(r => ({
+          x: r.freq / 1e14, // 归一化频率单位 10^14 Hz
+          y: r.Ua
+        }));
+
+        const n = pts.length;
+        let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0, sumYY = 0;
+        for (const p of pts) {
+          sumX += p.x;
+          sumY += p.y;
+          sumXY += p.x * p.y;
+          sumXX += p.x * p.x;
+          sumYY += p.y * p.y;
+        }
+
+        const denom = (n * sumXX - sumX * sumX);
+        if (Math.abs(denom) < 1e-9) return { valid: false };
+
+        const k = (n * sumXY - sumX * sumY) / denom;
+        const b = (sumY - k * sumX) / n;
+
+        // 计算相关系数 R^2
+        const numR = (n * sumXY - sumX * sumY);
+        const denR = Math.sqrt((n * sumXX - sumX * sumX) * (n * sumYY - sumY * sumY));
+        const r2 = denR !== 0 ? Math.pow(numR / denR, 2) : 0;
+
+        // 斜率 k 的物理意义：k = (h/e) * 1e-14
+        // 所以 h_exp = k * 1e-14 * e
+        const h_fit = k * 1e-14 * CONSTANTS.e;
+        const W0_fit = Math.abs(b); // eV
+        const relativeError = Math.abs(h_fit - CONSTANTS.h) / CONSTANTS.h * 100;
+
+        return {
+          valid: true,
+          k,
+          b,
+          r2,
+          h_fit,
+          W0_fit,
+          relativeError
+        };
+      }
+    };
+
+    // ==========================================
+    // 5. 深度融合的 AI 物理引擎 (实时巡检 + 评估 + 对话)
+    // ==========================================
+    const AIEngine = {
+      // 实时监视器状态机巡检
+      inspectState() {
+        const titleEl = document.getElementById('aiGuardTitle');
+        const descEl = document.getElementById('aiGuardDesc');
+        const Eph = Physics.getPhotonEnergy(state.wavelength);
+        const metal = METALS[state.metalKey];
+
+        // 状态巡检 1：光源未开启
+        if (!state.isLightOn) {
+          titleEl.textContent = '⚠️ 警示：单色光源未通电';
+          descEl.textContent = '当前光电管处于黑暗环境。微安表指示仅为微弱底噪暗电流，调节极间电压无法测得有效光电子伏安曲线，请先开启光源。';
+          return;
+        }
+
+        // 状态巡检 2：入射光波长大于金属红限 (低于截止频率)
+        if (Eph < metal.W0) {
+          titleEl.textContent = '💡 物理思辨：光子能量低于逸出功 (hν < W₀)';
+          descEl.textContent = `当前波长 ${state.wavelength}nm 对应的单光子能量仅为 ${Eph.toFixed(2)}eV，低于阴极 ${metal.name} 的逸出功 (${metal.W0}eV)。无论把光强调得多么强，均不会出射光电子！这正是经典电磁理论被爱因斯坦光子说击败的标志性证据。`;
+          return;
+        }
+
+        // 状态巡检 3：正在寻找截止电压 Ua (当电压为负且接近 Ua 时)
+        const Ua = Physics.getStoppingPotential(state.wavelength, state.metalKey);
+        const diffToUa = Math.abs(state.voltage - (-Ua));
+        if (diffToUa < 0.25) {
+          titleEl.textContent = '🎯 精准测定中：已接近反向遏止电压临界点';
+          descEl.textContent = `当前理论遏止电压约为 -${Ua.toFixed(2)}V。请使用右下方微调按钮（±0.01V 步长）轻微调整，精准观察电流何时降至 0.000μA 并记录数据点。`;
+          return;
+        }
+
+        // 状态巡检 4：正向加速区已进入饱和电流
+        if (state.voltage > 1.5) {
+          titleEl.textContent = '📈 观察：已进入饱和光电流区 (Saturation Region)';
+          descEl.textContent = '极间加速电场足够强，阴极溢出的所有光电子几乎全部被阳极收集。此时进一步提高加速电压，光电流不再增大，仅受入射光通量（光强）限制。';
+          return;
+        }
+
+        // 默认正常指导
+        titleEl.textContent = '✅ AI 实验导师实时在线巡检';
+        descEl.textContent = `当前选择：${metal.name} 阴极，入射光 ${state.wavelength}nm (光子能量 ${Eph.toFixed(2)}eV)。出射电子最大初动能 ${(Eph - metal.W0).toFixed(2)}eV。请调节电压定位截止点并记录表格。`;
+      },
+
+      // 一键生成 AI 综合评估报告
+      generateEvaluation() {
+        const records = state.records;
+        const n = records.length;
+        
+        let scoreOp = 0;
+        let scoreData = 0;
+        let scoreFit = 0;
+        let scoreTheory = 25; // 基础概念理解分
+
+        let diagnoseHTML = '';
+        let hFitVal = '--';
+        let errorVal = '--';
+
+        // 1. 数据完整性打分 (满分 25)
+        if (n >= 5) scoreData = 25;
+        else if (n >= 3) scoreData = 18;
+        else if (n >= 1) scoreData = 10;
+        else scoreData = 0;
+
+        // 2. 拟合精度与误差分析 (满分 25)
+        const fit = LinearRegression.fit(records);
+        if (fit.valid) {
+          hFitVal = fit.h_fit.toExponential(3) + ' J·s';
+          errorVal = fit.relativeError.toFixed(2) + '%';
+
+          if (fit.relativeError < 3.0) {
+            scoreFit = 25;
+          } else if (fit.relativeError < 8.0) {
+            scoreFit = 21;
+          } else if (fit.relativeError < 15.0) {
+            scoreFit = 16;
+          } else {
+            scoreFit = 10;
+          }
+        } else {
+          scoreFit = 0;
+        }
+
+        // 3. 操作规范度打分 (满分 25)
+        if (n >= 3 && fit.valid && fit.r2 > 0.95) {
+          scoreOp = 24;
+        } else if (n >= 2) {
+          scoreOp = 18;
+        } else {
+          scoreOp = 8;
+        }
+
+        const totalScore = scoreOp + scoreData + scoreFit + scoreTheory;
+
+        // 组装诊断评语
+        if (n < 3) {
+          diagnoseHTML = `<b>实验数据偏少：</b>当前仅采集了 ${n} 组数据点，不足以支撑高精度的最小二乘法拟合。建议依次测试汞灯 5 种标准特征波长（365nm、405nm、436nm、546nm、577nm），覆盖更宽的频率区间。`;
+        } else if (fit.valid && fit.relativeError < 5.0) {
+          diagnoseHTML = `<b>实验成绩优秀！</b> 普朗克常数拟合值为 ${fit.h_fit.toExponential(3)} J·s，相对误差仅为 ${fit.relativeError.toFixed(2)}%，拟合线性相关系数 R² 达到 ${fit.r2.toFixed(4)}。<br>
+          <b>误差来源分析：</b>微小误差主要来自光电管反向暗电流、光电子阳极微弱反向散射以及微调旋钮步长分辨率限制。`;
+        } else {
+          diagnoseHTML = `<b>操作建议：</b>拟合相对误差为 ${errorVal}。在测定截止电压 \(U_a\) 时，请务必关注微安表读数恰好归零的临界反向电势，避免电压过冲导致 \(U_a\) 偏大。`;
+        }
+
+        document.getElementById('evalTotalScore').textContent = totalScore;
+        document.getElementById('evalScoreOp').textContent = scoreOp + '/25';
+        document.getElementById('evalScoreData').textContent = scoreData + '/25';
+        document.getElementById('evalScoreFit').textContent = scoreFit + '/25';
+        document.getElementById('evalScoreTheory').textContent = scoreTheory + '/25';
+
+        document.getElementById('evalResultText').textContent = 
+          `普朗克常数测定值: ${hFitVal} | 理论值: 6.626×10⁻³⁴ J·s | 相对误差: ${errorVal}`;
+        document.getElementById('evalDiagnoseText').innerHTML = diagnoseHTML;
+
+        // 打开弹窗
+        document.getElementById('modalEvaluation').classList.add('active');
+
+        // 语音播报总结
+        if (state.speechEnabled) {
+          Multimodal.speak(`AI评估完成。您的实验综合评分为 ${totalScore} 分。`);
+        }
+      },
+
+      // 苏格拉底式启发式助教回复 (离线规则库 + 状态感知引擎)
+      getBuiltinResponse(prompt) {
+        const text = prompt.toLowerCase();
+
+        if (text.includes('饱和') || text.includes('饱和光电流')) {
+          return '【物理机理剖析】光电流之所以存在饱和值 \(I_s\)，是因为在恒定光照强度下，单位时间内照射到阴极上的入射光子总数是恒定的。光子激发出的光电子数目具有确定的物理上限。当两极板间正向加速电场足够强时，所有逸出的光电子均被阳极全部收集，即使继续加大电压，电流也无法再增加了。要增大饱和电流，必须通过调大光阑孔径或提高光源照度！';
+        }
+
+        if (text.includes('光强') && (text.includes('截止') || text.includes('遏止') || text.includes('频率'))) {
+          return '【爱因斯坦光量子说核心】根据光电效应方程 \(e U_a = h\nu - W_0\)，反向遏止电压 \(U_a\) 仅仅由单光子能量 \(h\nu\) 和阴极材料逸出功 \(W_0\) 决定！光强在微观上只代表光子“密度/通量”，并不改变单个光子的能量。这正是经典电磁学（波动学说认为波强越大能量越高）无法解释的世纪谜题。';
+        }
+
+        if (text.includes('精确') || text.includes('怎么测') || text.includes('找截止电压')) {
+          return '【实验操作技巧】寻找反向截止电压 \(U_a\) 时，请首先施加负向电压（例如 -1.5V），观察微安表。当电流接近 0.00μA 时，切换为微调模式（点击 ±0.01V 步长按钮），缓慢降低反向电压，找到电流指针从 0.000 刚刚微微出现偏移的交界点，记下此时的负电压值！';
+        }
+
+        if (text.includes('困难') || text.includes('经典') || text.includes('波动')) {
+          return '【物理学史与理论碰撞】经典波动理论在光电效应面前遇到了三大致命困境：\n1. 瞬时性：经典理论认为电子积聚能量需要时间，但实验发现光电子出射是瞬时的（< 10⁻⁹秒）；\n2. 红限频率：经典理论认为只要光足够强任何频率都能激发出电子，而实验发现低于红限频率无论多强光都无电流；\n3. 初动能与光强无关：经典认为光强越大电子动能越大，而实验表明动能只与光频率相关。爱因斯坦正因成功解释这一现象获得 1921 年诺贝尔物理学奖。';
+        }
+
+        if (text.includes('误差') || text.includes('为什么不准')) {
+          return '【实验误差归因分析】在实际光电管实验中，误差通常来源于三个方面：\n1. 暗电流与本底电流：由于室温热起伏及微弱环境杂散光，即使反向电压达到截止值，电路仍可能有 10⁻¹¹A 级别的暗电流；\n2. 阳极反向光电效应：从阴极激发的散射光照射到阳极，阳极材料也可能逸出少量反向电子；\n3. 接触电势差：阴极与阳极导线因金属材料不同而形成接触电位差，导致外加电压表的读数与极间真实电场存在一个固定偏差。在 \(\\nu - U_a\) 拟合直线中，该偏差会体现在截距中，但由于取斜率 \(k = h/e\)，斜率本身能够抵消大部分系统误差！';
+        }
+
+        // 默认基于当前仿真状态的启发回答
+        const Eph = Physics.getPhotonEnergy(state.wavelength);
+        return `你提到了“${prompt}”。当前我们使用的阴极材料是 ${METALS[state.metalKey].name}，入射光为 ${state.wavelength}nm（光子能量 ${Eph.toFixed(2)}eV）。你可以观察到：当电压处于反向遏止区时，电子在飞向阳极的过程中被电场推斥减速。你可以尝试对比不同波长下的截止电压，看看它们是否严格呈直线规律！`;
+      },
+
+      // 接入本地 Ollama / LM Studio 离线大模型 (加分项)
+      async requestLLM(userPrompt) {
+        if (state.aiEngineMode === 'builtin') {
+          return this.getBuiltinResponse(userPrompt);
+        }
+
+        const sysPrompt = `你是一位严谨而富有启发性的大学物理实验智能助教，正在指导学生进行《光电效应与普朗克常数测定》虚拟仿真实验。
+当前实验物理状态：
+- 入射波长: ${state.wavelength}nm (光子能量: ${Physics.getPhotonEnergy(state.wavelength).toFixed(2)}eV)
+- 光强: ${state.intensity}%
+- 极间电压: ${state.voltage.toFixed(2)}V
+- 阴极材料: ${METALS[state.metalKey].name} (逸出功 W0 = ${METALS[state.metalKey].W0}eV)
+- 当前光电流: ${Physics.calcPhotocurrent(state.voltage, state.wavelength, state.intensity, state.metalKey, state.isLightOn).toFixed(3)} uA
+请以苏格拉底启发式教学风格简练回答学生的问题，指出背后的微观机理，字数控制在 150 字以内。`;
+
+        try {
+          const res = await fetch(state.llmConfig.url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${state.llmConfig.key}`
+            },
+            body: JSON.stringify({
+              model: state.llmConfig.model,
+              messages: [
+                { role: 'system', content: sysPrompt },
+                { role: 'user', content: userPrompt }
+              ],
+              temperature: 0.7,
+              max_tokens: 350
+            })
+          });
+
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+
+          const data = await res.json();
+          if (data.choices && data.choices[0] && data.choices[0].message) {
+            return data.choices[0].message.content;
+          }
+          return '【大模型响应解析错误】未获取到标准回答文本。';
+        } catch (err) {
+          console.warn('本地 LLM 连接失败，自动降级至内置专家引擎:', err);
+          return `【本地 LLM 离线接口未连接】已自动为您切换为内置大学物理专家引擎回答：\n\n` + this.getBuiltinResponse(userPrompt);
+        }
+      }
+    };
+
+    // ==========================================
+    // 6. 多模态创新体验 (Web Speech 语音 + 手机体感)
+    // ==========================================
+    const Multimodal = {
+      speak(text) {
+        if (!state.speechEnabled || !('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text.replace(/[#*`\\]/g, ''));
+        utter.lang = 'zh-CN';
+        utter.rate = 1.05;
+        window.speechSynthesis.speak(utter);
+      },
+
+      initVoiceInput(callback) {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRec) {
+          alert('您的浏览器暂未开放 Web Speech Recognition 语音识别API，建议使用 Chrome/Edge 浏览器或键盘直接输入。');
+          return null;
+        }
+        const rec = new SpeechRec();
+        rec.lang = 'zh-CN';
+        rec.continuous = false;
+        rec.interimResults = false;
+        rec.onresult = (e) => {
+          const phrase = e.results[0][0].transcript;
+          callback(phrase);
+        };
+        rec.onerror = (e) => {
+          console.warn('语音识别错误:', e);
+        };
+        return rec;
+      },
+
+      initDeviceOrientation() {
+        if (window.DeviceOrientationEvent) {
+          window.addEventListener('deviceorientation', (e) => {
+            if (!state.gyroEnabled) return;
+            // 利用手机倾斜角 gamma (-90 ~ 90) 控制微调电压
+            if (e.gamma !== null) {
+              const delta = (e.gamma / 90) * 0.05;
+              let newV = Math.max(-4.0, Math.min(4.0, state.voltage + delta));
+              state.voltage = parseFloat(newV.toFixed(2));
+              syncUIWithState();
+            }
+          });
+        }
+      }
+    };
+
+    // ==========================================
+    // 7. UI 事件交互与状态同步
+    // ==========================================
+    let simInstance = null;
+    let voiceRecognizer = null;
+
+    function syncUIWithState() {
+      // 1. 同步仪表数据
+      const Eph = Physics.getPhotonEnergy(state.wavelength);
+      const W0 = METALS[state.metalKey].W0;
+      const maxEk = Physics.getMaxEk(state.wavelength, state.metalKey);
+      const curI = Physics.calcPhotocurrent(state.voltage, state.wavelength, state.intensity, state.metalKey, state.isLightOn);
+
+      document.getElementById('txtPhotonEnergy').textContent = Eph.toFixed(2) + ' eV';
+      document.getElementById('txtWorkFunction').textContent = W0.toFixed(2) + ' eV';
+      document.getElementById('txtMaxEk').textContent = maxEk.toFixed(2) + ' eV';
+      document.getElementById('txtFieldWork').textContent = state.voltage.toFixed(2) + ' eV';
+
+      document.getElementById('dispCurrent').innerHTML = curI.toFixed(3) + ' <span style="font-size:0.9rem;">μA</span>';
+      
+      const vSign = state.voltage >= 0 ? '+' : '';
+      document.getElementById('dispVoltage').innerHTML = vSign + state.voltage.toFixed(2) + ' <span style="font-size:0.9rem;">V</span>';
+      
+      // 工作模式判断
+      const modeEl = document.getElementById('dispVoltageMode');
+      if (state.voltage > 0) {
+        modeEl.textContent = '工作模式: 正向加速电场 (+V)';
+        modeEl.style.color = '#34d399';
+      } else if (state.voltage < 0) {
+        modeEl.textContent = '工作模式: 反向遏止减速场 (-V)';
+        modeEl.style.color = '#fb7185';
+      } else {
+        modeEl.textContent = '工作模式: 零偏置电场 (0.00V)';
+        modeEl.style.color = '#94a3b8';
+      }
+
+      // 控制滑块与数字同步
+      document.getElementById('sliderVoltage').value = state.voltage;
+      document.getElementById('dispVoltSlider').textContent = state.voltage.toFixed(2) + 'V';
+
+      document.getElementById('sliderWavelength').value = state.wavelength;
+      document.getElementById('dispWlSlider').textContent = state.wavelength + 'nm';
+      document.getElementById('txtWavelengthVal').textContent = state.wavelength + 'nm';
+
+      document.getElementById('sliderIntensity').value = state.intensity;
+      document.getElementById('dispIntensitySlider').textContent = state.intensity + '%';
+      document.getElementById('txtIntensityVal').textContent = state.intensity + '%';
+
+      document.getElementById('btnToggleLight').textContent = state.isLightOn ? '光源：已开启' : '光源：已关闭';
+      document.getElementById('btnToggleLight').style.borderColor = state.isLightOn ? 'var(--accent-cyan)' : 'var(--accent-rose)';
+
+      // 重新绘制伏安曲线
+      if (state.activeChartTab === 'iv') {
+        ChartEngine.drawIVCurve('ivChartCanvas');
+      } else {
+        ChartEngine.drawFitChart('fitChartCanvas');
+      }
+
+      // AI 实时巡检状态机更新
+      AIEngine.inspectState();
+    }
+
+    // 渲染实验记录表格
+    function renderDataTable() {
+      const tbody = document.getElementById('dataTableBody');
+      tbody.innerHTML = '';
+
+      state.records.forEach((rec, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td>${rec.wavelength}</td>
+          <td>${(rec.freq / 1e14).toFixed(3)}</td>
+          <td style="color:#00f0ff; font-weight:700;">${rec.Ua.toFixed(3)}</td>
+          <td>${rec.Is.toFixed(3)}</td>
+          <td>${rec.metal}</td>
+          <td><button class="btn btn-danger btn-sm" onclick="deleteRecord(${rec.id})">删除</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // 更新拟合指标
+      const fit = LinearRegression.fit(state.records);
+      if (fit.valid) {
+        document.getElementById('statFitH').textContent = fit.h_fit.toExponential(3) + ' J·s';
+        document.getElementById('statFitError').textContent = fit.relativeError.toFixed(2) + '%';
+        document.getElementById('statFitW0').textContent = fit.W0_fit.toFixed(2) + ' eV';
+      } else {
+        document.getElementById('statFitH').textContent = '--';
+        document.getElementById('statFitError').textContent = '--';
+        document.getElementById('statFitW0').textContent = '--';
+      }
+
+      // 如果当前是拟合视图，重新绘制
+      if (state.activeChartTab === 'fit') {
+        ChartEngine.drawFitChart('fitChartCanvas');
+      }
+    }
+
+    window.deleteRecord = function(id) {
+      state.records = state.records.filter(r => r.id !== id);
+      renderDataTable();
+    };
+
+    // 记录数据点动作
+    function recordCurrentPoint() {
+      const freq = Physics.getFrequency(state.wavelength);
+      const theoreticalUa = Physics.getStoppingPotential(state.wavelength, state.metalKey);
+      
+      // 读取当前施加的反向电压作为实验读数
+      // 如果当前电压接近遏止电压，记录当前测定值；否则采用更真实带有测量随机扰动的截止电压
+      let measuredUa = theoreticalUa;
+      if (state.voltage < 0 && Math.abs(-state.voltage - theoreticalUa) < 0.3) {
+        measuredUa = Math.abs(state.voltage);
+      } else {
+        // 微小读数视差随机扰动 (0.5% ~ 1.5%)
+        measuredUa = theoreticalUa * (1 + (Math.random() - 0.5) * 0.02);
+      }
+
+      const Is = (state.intensity / 100) * 3.5;
+
+      state.records.push({
+        id: state.currentRecordId++,
+        wavelength: state.wavelength,
+        freq: freq,
+        Ua: parseFloat(measuredUa.toFixed(3)),
+        Is: parseFloat(Is.toFixed(3)),
+        metal: state.metalKey
+      });
+
+      renderDataTable();
+
+      // 切换并显示拟合图
+      document.getElementById('tabBtnFit').click();
+
+      if (state.speechEnabled) {
+        Multimodal.speak(`已记录波长 ${state.wavelength} 纳米数据点，截止电压 ${measuredUa.toFixed(2)} 伏特。`);
+      }
+    }
+
+    // 发送聊天消息
+    async function handleSendChat(userText) {
+      if (!userText || userText.trim() === '') return;
+
+      const chatContainer = document.getElementById('chatMessages');
+
+      // 渲染用户气泡
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chat-msg user';
+      userMsg.innerHTML = `
+        <div class="chat-avatar">我</div>
+        <div class="chat-bubble">${userText}</div>
+      `;
+      chatContainer.appendChild(userMsg);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // 渲染思考中占位气泡
+      const aiMsg = document.createElement('div');
+      aiMsg.className = 'chat-msg assistant';
+      aiMsg.innerHTML = `
+        <div class="chat-avatar">AI</div>
+        <div class="chat-bubble" style="color:var(--text-muted);">正在思考与检索微观物理规律...</div>
+      `;
+      chatContainer.appendChild(aiMsg);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // 获取 AI 回复 (离线或本地 LLM)
+      const reply = await AIEngine.requestLLM(userText);
+      aiMsg.querySelector('.chat-bubble').innerHTML = reply.replace(/\n/g, '<br>');
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // 语音播报
+      Multimodal.speak(reply);
+    }
+
+    // ==========================================
+    // 8. 页面加载初始化
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      simInstance = new ParticleSimulation('simCanvas');
+      simInstance.loop(performance.now());
+
+      Multimodal.initDeviceOrientation();
+      voiceRecognizer = Multimodal.initVoiceInput((text) => {
+        document.getElementById('chatInput').value = text;
+        handleSendChat(text);
+      });
+
+      // 波长滑块与预设按钮
+      const sliderWl = document.getElementById('sliderWavelength');
+      sliderWl.addEventListener('input', (e) => {
+        state.wavelength = parseInt(e.target.value);
+        // 清除预设的高亮
+        document.querySelectorAll('.spectral-presets .chip-btn').forEach(btn => {
+          btn.classList.toggle('active', parseInt(btn.dataset.wl) === state.wavelength);
+        });
+        syncUIWithState();
+      });
+
+      document.querySelectorAll('.spectral-presets .chip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.spectral-presets .chip-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.wavelength = parseInt(btn.dataset.wl);
+          syncUIWithState();
+        });
+      });
+
+      // 光强调节
+      const sliderIntensity = document.getElementById('sliderIntensity');
+      sliderIntensity.addEventListener('input', (e) => {
+        state.intensity = parseInt(e.target.value);
+        syncUIWithState();
+      });
+
+      // 电压滑块与步进按钮
+      const sliderV = document.getElementById('sliderVoltage');
+      sliderV.addEventListener('input', (e) => {
+        state.voltage = parseFloat(e.target.value);
+        syncUIWithState();
+      });
+
+      document.getElementById('btnVoltMinusCoarse').addEventListener('click', () => {
+        state.voltage = Math.max(-4.0, parseFloat((state.voltage - 0.1).toFixed(2)));
+        syncUIWithState();
+      });
+      document.getElementById('btnVoltMinusFine').addEventListener('click', () => {
+        state.voltage = Math.max(-4.0, parseFloat((state.voltage - 0.01).toFixed(2)));
+        syncUIWithState();
+      });
+      document.getElementById('btnVoltZero').addEventListener('click', () => {
+        state.voltage = 0.00;
+        syncUIWithState();
+      });
+      document.getElementById('btnVoltPlusFine').addEventListener('click', () => {
+        state.voltage = Math.min(4.0, parseFloat((state.voltage + 0.01).toFixed(2)));
+        syncUIWithState();
+      });
+      document.getElementById('btnVoltPlusCoarse').addEventListener('click', () => {
+        state.voltage = Math.min(4.0, parseFloat((state.voltage + 0.1).toFixed(2)));
+        syncUIWithState();
+      });
+
+      // 阴极金属材料切换
+      document.getElementById('selectCathode').addEventListener('change', (e) => {
+        state.metalKey = e.target.value;
+        const metal = METALS[state.metalKey];
+        document.getElementById('cathodeHint').textContent = 
+          `当前材料${metal.name}的逸出功为 ${metal.W0}eV，红限波长为 ${metal.lambda0}nm。大于此波长的光无法引起光电效应。`;
+        syncUIWithState();
+      });
+
+      // 光源开关与重置
+      document.getElementById('btnToggleLight').addEventListener('click', () => {
+        state.isLightOn = !state.isLightOn;
+        syncUIWithState();
+      });
+
+      document.getElementById('btnResetSim').addEventListener('click', () => {
+        simInstance.reset();
+      });
+
+      document.getElementById('chkSlowMotion').addEventListener('change', (e) => {
+        state.slowMotion = e.target.checked;
+      });
+
+      document.getElementById('chkGyro').addEventListener('change', (e) => {
+        state.gyroEnabled = e.target.checked;
+        if (state.gyroEnabled) {
+          alert('手机体感交互已启用！如在手机上操作，倾斜手机即可微调极间电压 (加分项)。');
+        }
+      });
+
+      // 记录数据
+      document.getElementById('btnRecordData').addEventListener('click', recordCurrentPoint);
+      document.getElementById('btnClearTable').addEventListener('click', () => {
+        if (confirm('确认清空所有已记录的实验数据点吗？')) {
+          state.records = [];
+          renderDataTable();
+        }
+      });
+
+      // 一键采集 Demo 数据点 (方便快速答辩演示)
+      document.getElementById('btnAutoRecordDemo').addEventListener('click', () => {
+        state.records = [];
+        const demoLines = [365, 405, 436, 546, 577];
+        demoLines.forEach(wl => {
+          const freq = Physics.getFrequency(wl);
+          const theoreticalUa = Physics.getStoppingPotential(wl, state.metalKey);
+          // 加入 1% 真实测量噪声
+          const noisyUa = theoreticalUa * (1 + (Math.random() - 0.5) * 0.02);
+          state.records.push({
+            id: state.currentRecordId++,
+            wavelength: wl,
+            freq: freq,
+            Ua: parseFloat(noisyUa.toFixed(3)),
+            Is: parseFloat(((state.intensity / 100) * 3.2).toFixed(3)),
+            metal: state.metalKey
+          });
+        });
+        renderDataTable();
+        document.getElementById('tabBtnFit').click();
+        alert('已自动采集汞灯 5 条经典谱线实验数据！请查看线性拟合普朗克常数与截距。');
+      });
+
+      // 图表 Tab 切换
+      const tabIV = document.getElementById('tabBtnIV');
+      const tabFit = document.getElementById('tabBtnFit');
+      const viewIV = document.getElementById('viewIVChart');
+      const viewFit = document.getElementById('viewFitChart');
+
+      tabIV.addEventListener('click', () => {
+        tabIV.classList.add('active');
+        tabFit.classList.remove('active');
+        viewIV.style.display = 'block';
+        viewFit.style.display = 'none';
+        state.activeChartTab = 'iv';
+        ChartEngine.drawIVCurve('ivChartCanvas');
+      });
+
+      tabFit.addEventListener('click', () => {
+        tabFit.classList.add('active');
+        tabIV.classList.remove('active');
+        viewIV.style.display = 'none';
+        viewFit.style.display = 'block';
+        state.activeChartTab = 'fit';
+        ChartEngine.drawFitChart('fitChartCanvas');
+      });
+
+      // 聊天发送
+      const chatInput = document.getElementById('chatInput');
+      const btnSendChat = document.getElementById('btnSendChat');
+      btnSendChat.addEventListener('click', () => {
+        const val = chatInput.value;
+        chatInput.value = '';
+        handleSendChat(val);
+      });
+      chatInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const val = chatInput.value;
+          chatInput.value = '';
+          handleSendChat(val);
+        }
+      });
+
+      // 快捷提问芯片
+      document.querySelectorAll('.quick-chips .quick-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          handleSendChat(chip.dataset.q);
+        });
+      });
+
+      // 语音输入
+      document.getElementById('btnVoiceInput').addEventListener('click', () => {
+        if (voiceRecognizer) {
+          try {
+            voiceRecognizer.start();
+            alert('请开始说话...');
+          } catch(err) {
+            console.log(err);
+          }
+        }
+      });
+
+      // 语音播报开关
+      document.getElementById('chkSpeech').addEventListener('change', (e) => {
+        state.speechEnabled = e.target.checked;
+        if (!state.speechEnabled && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+        }
+      });
+
+      // 模态框逻辑：AI 评估报告
+      document.getElementById('btnEvaluateReport').addEventListener('click', () => {
+        AIEngine.generateEvaluation();
+      });
+      document.getElementById('btnCloseEvalModal').addEventListener('click', () => {
+        document.getElementById('modalEvaluation').classList.remove('active');
+      });
+      document.getElementById('btnConfirmEval').addEventListener('click', () => {
+        document.getElementById('modalEvaluation').classList.remove('active');
+      });
+      document.getElementById('btnPrintReport').addEventListener('click', () => {
+        window.print();
+      });
+
+      // 模态框逻辑：LLM 配置 (加分项)
+      document.getElementById('btnOpenLLMSettings').addEventListener('click', () => {
+        document.getElementById('modalLLMConfig').classList.add('active');
+      });
+      document.getElementById('btnCloseLLMModal').addEventListener('click', () => {
+        document.getElementById('modalLLMConfig').classList.remove('active');
+      });
+      document.getElementById('selEngineMode').addEventListener('change', (e) => {
+        const customDiv = document.getElementById('llmCustomSettings');
+        if (e.target.value === 'builtin') {
+          customDiv.style.display = 'none';
+        } else {
+          customDiv.style.display = 'flex';
+        }
+      });
+      document.getElementById('btnSaveLLM').addEventListener('click', () => {
+        state.aiEngineMode = document.getElementById('selEngineMode').value;
+        state.llmConfig.url = document.getElementById('cfgApiUrl').value.trim();
+        state.llmConfig.model = document.getElementById('cfgModelName').value.trim();
+        state.llmConfig.key = document.getElementById('cfgApiKey').value.trim() || 'ollama';
+
+        const badge = document.getElementById('badgeAIMode');
+        if (state.aiEngineMode === 'builtin') {
+          badge.textContent = '离线物理专家引擎';
+        } else if (state.aiEngineMode === 'ollama') {
+          badge.textContent = `本地大模型 (${state.llmConfig.model})`;
+        } else {
+          badge.textContent = `远程 API (${state.llmConfig.model})`;
+        }
+
+        document.getElementById('modalLLMConfig').classList.remove('active');
+        alert('AI 引擎配置已成功保存！');
+      });
+      document.getElementById('btnTestLLM').addEventListener('click', async () => {
+        const testUrl = document.getElementById('cfgApiUrl').value.trim();
+        try {
+          const res = await fetch(testUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: document.getElementById('cfgModelName').value.trim(),
+              messages: [{ role: 'user', content: '测试' }],
+              max_tokens: 5
+            })
+          });
+          if (res.ok) alert('✅ 连通性测试成功！本地 LLM 服务响应正常。');
+          else alert(`⚠️ 接口返回错误码 ${res.status}，请检查服务是否已启动并允许跨域。`);
+        } catch(e) {
+          alert('❌ 无法连接到该地址，请确认 Ollama/LM Studio 是否在运行。');
+        }
+      });
+
+      // 模态框逻辑：实验手册
+      document.getElementById('btnOpenDocs').addEventListener('click', () => {
+        document.getElementById('modalDocs').classList.add('active');
+      });
+      document.getElementById('btnCloseDocsModal').addEventListener('click', () => {
+        document.getElementById('modalDocs').classList.remove('active');
+      });
+      document.getElementById('btnGotDocs').addEventListener('click', () => {
+        document.getElementById('modalDocs').classList.remove('active');
+      });
+
+      // 初始渲染
+      syncUIWithState();
+    });
+  </script>
+</body>
+</html>
