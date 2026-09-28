@@ -26,7 +26,8 @@
 
 ## 🚀 访问与使用
 
-- **在线访问链接 (GitHub Pages)**: `https://<你的GitHub用户名>.github.io/<仓库名>/`
+- **在线访问链接 (GitHub Pages)**: [https://lvesucces.github.io/college-physics-simulation/](https://lvesucces.github.io/college-physics-simulation/)
+- **GitHub 开源仓库**: [https://github.com/Lvesucces/college-physics-simulation](https://github.com/Lvesucces/college-physics-simulation)
 - **本地直接运行**: 任意现代浏览器双击打开 `index.html` 即可运行。
 
 ---
